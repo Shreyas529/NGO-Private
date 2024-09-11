@@ -3,7 +3,7 @@
 
 from groq import Groq
 import base64
-from AI.prompts import image_prompt, text_prompt, categorise_prompt
+from Image_Detection.prompts import image_prompt, text_prompt, categorise_prompt
 from dotenv import load_dotenv
 load_dotenv()
 

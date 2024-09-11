@@ -1,3 +1,4 @@
+groq
 firebase-admin
 python-dotenv
 py-evm
