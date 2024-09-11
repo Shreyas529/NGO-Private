@@ -6,11 +6,11 @@ def initialize_firebase():
     Initialize Firebase app and Firestore.
     :return: Firestore client instance
     """
-    # Check if the Firebase app is already initialized
-    if not firebase_admin._apps:
-        # Path to your Firebase service account key JSON file
-        cred = credentials.Certificate("path/to/serviceAccountKey.json")
-        firebase_admin.initialize_app(cred)
+    
+    cred = credentials.Certificate("serviceAccountKey.json")
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': 'colossus-726c5.appspot.com'
+        })
 
     # Initialize Firestore
     db = firestore.client()
