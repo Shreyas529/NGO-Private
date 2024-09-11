@@ -44,7 +44,7 @@ class NGO_Database:
             raise Exception("User not authenticated")
 
         # Proceed with adding NGO
-        doc_ref = db.collection(u'NGO').document()
+        doc_ref = self.db.collection(u'NGO').document()
         doc_ref.set({
             u'Name': NGO_name,
             u'Category': NGO_category,
@@ -59,7 +59,7 @@ class NGO_Database:
             raise Exception("User not authenticated")
 
         # Proceed with updating category
-        docs = db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+        docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
         for doc in docs:
             doc.reference.update({u'Category': category})
 
@@ -69,7 +69,7 @@ class NGO_Database:
             raise Exception("User not authenticated")
 
         # Proceed with updating description
-        docs = db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+        docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
         for doc in docs:
             doc.reference.update({u'Description': description})
 
@@ -79,7 +79,7 @@ class NGO_Database:
             raise Exception("User not authenticated")
 
         # Proceed with updating phone
-        docs = db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+        docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
         for doc in docs:
             doc.reference.update({u'Phone': phone})
 
@@ -89,6 +89,6 @@ class NGO_Database:
             raise Exception("User not authenticated")
 
         # Proceed with updating logo
-        docs = db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+        docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
         for doc in docs:
             doc.reference.update({u'Logo': self.imageUploader.upload_image(image_logo, "logos")})
