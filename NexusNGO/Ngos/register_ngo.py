@@ -41,7 +41,7 @@ def ngo_registration(db):
                 # Register the NGO in Firestore
                 image_bytes = image_logo.read()
                 encoded_image = base64.b64encode(image_bytes).decode('utf-8')
-                ngo_db.add_NGO(id_token, ngo_name, "General", encoded_image, description, phone,needs)
+                ngo_db.add_NGO(id_token, ngo_name, "General", encoded_image, description, phone,needs_list)
                 st.success("NGO Registered Successfully!")
             else:
                 st.error("Failed to register. Please try again.")
