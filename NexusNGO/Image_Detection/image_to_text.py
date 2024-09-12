@@ -59,19 +59,22 @@ class Response:
         response=response.split(",")
         return response
     
-    def _categorise_objects_to_NGO(self,NGO_categories):
+    def _categorise_objects_to_NGO(self,NGO_DATA):
+
+        print(categorise_prompt.format(NGO_DATA=f"{NGO_DATA}",objects=",".join(self.objects)))
 
         chat_completion = self.client.chat.completions.create(
             messages=[
             {
                 "role": "user",
                 "content": 
-                     categorise_prompt.format(categories=",".join(NGO_categories),objects=",".join(self.objects)),
+                     categorise_prompt.format(NGO_DATA=f"{NGO_DATA}",objects=",".join(self.objects)),
             }
         ],
         model="llama-3.1-70b-versatile")
 
         response=chat_completion.choices[0].message.content
+        
         response=response[response.find("[")+1:response.find("]")]
         response=response.split(",")
         return list(set(response))
@@ -85,5 +88,5 @@ def encode_image(image_path):
 
 # Path to your image
 if __name__ == "__main__":
-    response=Response("image",encode_image("/home/shreyasarun/Documents/Hackathons/Collosus/NGO-Private/NexusNGO/Screenshot from 2024-05-08 18-14-12.png"))
+    response=Response("image",encode_image("/home/sathvik_rao/Colossus/NGO-Private/NexusNGO/temp.png"))
     response._categorise_objects_to_NGO(["Education","Health","Environment"])

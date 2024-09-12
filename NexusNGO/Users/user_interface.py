@@ -58,34 +58,54 @@ def user_ui(db):
 
 def donate_items(ngo_db):
     st.header("Donate Items")
-    st.write("You can upload an image of the item or describe it to find matching NGOs.")
+    st.write("You can either upload an image of the item or describe it to find matching NGOs.")
 
-    # Option to upload image
-    uploaded_image = st.file_uploader("Upload an image of the item", type=["jpg", "jpeg", "png"])
-    if uploaded_image:
-        # Display the uploaded image
-        image = Image.open(uploaded_image)
-        st.image(image, caption='Uploaded Image', use_column_width=True)
+    # Let the user choose between uploading an image or providing a description using selectbox
+    option = st.selectbox("Choose your method of donation:", ("Upload an Image", "Describe the Item"))
 
-        # Encode and detect objects using the image
-        detected_items = Response("image", encode_image(uploaded_image.read())).objects
-        st.write(f"**Detected Items:** {', '.join(detected_items)}")
+    if option == "Upload an Image":
+        # Option to upload image
+        uploaded_image = st.file_uploader("Upload an image of the item", type=["jpg", "jpeg", "png"])
 
-        # Search for NGOs that need these items
-        ngos = ngo_db.search_NGO_by_items(detected_items)
-        display_ngo_dashboard(ngos)
+        if uploaded_image:
+            # Display the uploaded image
+            image = Image.open(uploaded_image)
+            st.image(image, caption='Uploaded Image', use_column_width=True)
+            buffer = BytesIO()
+            image.save(buffer, format="PNG")  # Save the image in buffer
+            image_bytes = buffer.getvalue()
 
-    # Option to describe the item
-    st.subheader("Or Describe the Item")
-    item_description = st.text_area("Describe the item you wish to donate")
-    if st.button("Find NGOs"):
-        if item_description:
-            # Process the description to extract keywords
-            keywords = item_description.split()
-            ngos = ngo_db.search_NGO_by_items(keywords)
-            display_ngo_dashboard(ngos)
-        else:
-            st.warning("Please enter a description of the item.")
+            encoded_image = base64.b64encode(image_bytes).decode('utf-8')
+
+            # Encode and detect objects using the image
+            response_object = Response("image", encoded_image)
+            detected_items = response_object.objects
+
+            st.write(f"**Detected Items:** {', '.join(detected_items)}")
+
+            if st.button("Find NGOs"):
+                ngo_data = ngo_db.get_ngos()
+                ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
+                resp=response_object._categorise_objects_to_NGO(ngo_item_mapping)
+                resp=[resp[i].replace("'","") for i in range(len(resp))]
+                markdown_list = "\n".join([f"- {item}" for item in resp])
+                st.markdown(markdown_list)
+                st.write("Matching NGOs found...")
+                
+    elif option == "Describe the Item":
+        # Option to describe the item
+        st.subheader("Describe the Item")
+        item_description = st.text_area("Describe the item you wish to donate")
+        
+        if st.button("Find NGOs"):
+            if item_description:
+                ngo_data = ngo_db.get_ngos()
+                ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
+                # Perform search or matching logic based on item_description
+                st.write("Matching NGOs found...")
+            else:
+                st.warning("Please enter a description of the item.")
+
 
 def donate_funds(ngo_db):
     st.header("Donate Funds")
