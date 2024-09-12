@@ -39,8 +39,8 @@ def user_ui(db):
     option = st.sidebar.radio("", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"])
 
     # Main Title
-    st.markdown("<h1 class='title'>Welcome to the NGO Donation Platform</h1>", unsafe_allow_html=True)
-    st.write("Make a difference by donating items or funds to NGOs in need.")
+    # st.markdown("<h1 class='title'>Welcome to the NGO Donation Platform</h1>", unsafe_allow_html=True)
+    # st.write("Make a difference by donating items or funds to NGOs in need.")
 
     if option == "Donate Items":
         donate_items(ngo_db)
@@ -111,9 +111,31 @@ def search_ngos(ngo_db):
 
 def display_top_ngos(ngo_db):
     st.header("Top NGOs")
-    ngos = ngo_db.get_ngos()
+    
+    ngos = ngo_db.get_ngos()  # Retrieve list of NGOs from the database
+    
+    # Iterate through each NGO and display its basic details
     for ngo in ngos:
-        display_ngo_dashboard(ngo_db,ngo)
+        
+        st.subheader(f"NGO: {ngo['Name']}")
+        
+        if 'Description' in ngo:
+            st.write(f"**Description**: {ngo['Description']}")
+        
+        if 'Phone' in ngo:
+            st.write(f"**Phone**: {ngo['Phone']}")
+            
+        # if 'Logo' in ngo:
+        #     st.image(ngo['Logo'], caption='NGO Logo', use_column_width=True)
+        # Handle 'needs' safely, in case the field is missing
+        if 'needs' in ngo:
+            st.write(f"**Needs**: {', '.join(ngo['needs'])}")
+        else:
+            st.write("**Needs**: Not specified")
+        
+        # st.write(f"**Funds Received**: ${ngo.get('funds_received', 0):,}")
+        st.write("---")
+
 
 def process_donation(ngo_name, amount):
     # Implement blockchain transaction logic here
