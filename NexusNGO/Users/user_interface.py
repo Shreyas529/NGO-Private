@@ -1,19 +1,20 @@
 import streamlit as st
 from PIL import Image
-import requests
 
 # Import necessary functions from other modules
-from Image_Detection.image_to_text import Response , encode_image
-from firebase.firebase_config import initialize_firebase
-from firebase.db_interaction import search_ngos_by_items, get_top_ngos
-from firebase.storage_interaction import upload_image_to_firebase
+from Image_Detection.image_to_text import Response, encode_image
+from Firebase.cred import initialize_firebase
+from Firebase.db_interaction import NGO_Database
+from Ngos.ngo_interface import display_ngo_dashboard
 
-def user_ui():
+
+def user_ui(db):
     # Initialize Firebase
-    db = initialize_firebase()
+    # db = initialize_firebase()
+    ngo_db = NGO_Database(db)
 
     # Set page configuration
-    st.set_page_config(page_title="NGO Donation Platform", layout="wide")
+    # st.set_page_config(page_title="NGO Donation Platform", layout="wide")
 
     # Custom CSS to enhance the design
     st.markdown("""
@@ -42,15 +43,15 @@ def user_ui():
     st.write("Make a difference by donating items or funds to NGOs in need.")
 
     if option == "Donate Items":
-        donate_items(db)
+        donate_items(ngo_db)
     elif option == "Donate Funds":
-        donate_funds(db)
+        donate_funds(ngo_db)
     elif option == "Search NGOs":
-        search_ngos(db)
+        search_ngos(ngo_db)
     elif option == "Top NGOs":
-        display_top_ngos(db)
+        display_top_ngos(ngo_db)
 
-def donate_items(db):
+def donate_items(ngo_db):
     st.header("Donate Items")
     st.write("You can upload an image of the item or describe it to find matching NGOs.")
 
@@ -61,37 +62,33 @@ def donate_items(db):
         image = Image.open(uploaded_image)
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
-        # Upload image to Firebase Storage
-        image_url = upload_image_to_firebase(uploaded_image)
-        st.success("Image uploaded successfully!")
-
-        # Use AI model to detect objects in the image
-        detected_items = Response("image", encode_image(image_url))
+        # Encode and detect objects using the image
+        detected_items = Response("image", encode_image(uploaded_image.read())).objects
         st.write(f"**Detected Items:** {', '.join(detected_items)}")
 
         # Search for NGOs that need these items
-        ngos = search_ngos_by_items(db, detected_items)
-        display_ngos(ngos)
+        ngos = ngo_db.search_NGO_by_items(detected_items)
+        display_ngo_dashboard(ngos)
 
     # Option to describe the item
     st.subheader("Or Describe the Item")
     item_description = st.text_area("Describe the item you wish to donate")
     if st.button("Find NGOs"):
         if item_description:
-            # Here, you might process the description to extract keywords
+            # Process the description to extract keywords
             keywords = item_description.split()
-            ngos = search_ngos_by_items(db, keywords)
-            display_ngos(ngos)
+            ngos = ngo_db.search_NGO_by_items(keywords)
+            display_ngo_dashboard(ngos)
         else:
             st.warning("Please enter a description of the item.")
 
-def donate_funds(db):
+def donate_funds(ngo_db):
     st.header("Donate Funds")
     st.write("Choose an NGO and donate funds securely.")
 
     # Retrieve list of NGOs from the database
-    ngos = get_top_ngos(db)
-    ngo_names = [ngo['name'] for ngo in ngos]
+    ngos = ngo_db.get_ngos()
+    ngo_names = [ngo['Name'] for ngo in ngos]
 
     selected_ngo = st.selectbox("Select an NGO to donate to:", ngo_names)
     amount = st.number_input("Enter the amount you wish to donate:", min_value=1.0, step=0.5)
@@ -101,30 +98,22 @@ def donate_funds(db):
         transaction_id = process_donation(selected_ngo, amount)
         st.success(f"Thank you for your donation! Transaction ID: {transaction_id}")
 
-def search_ngos(db):
+def search_ngos(ngo_db):
     st.header("Search NGOs")
     search_query = st.text_input("Enter keywords to search for NGOs:")
     if st.button("Search"):
         if search_query:
             keywords = search_query.split()
-            ngos = search_ngos_by_items(db, keywords)
-            display_ngos(ngos)
+            ngos = ngo_db.search_NGO_by_items(keywords)
+            display_ngo_dashboard(ngos)
         else:
             st.warning("Please enter keywords to search.")
 
-def display_top_ngos(db):
+def display_top_ngos(ngo_db):
     st.header("Top NGOs")
-    ngos = get_top_ngos(db)
-    display_ngos(ngos)
-
-def display_ngos(ngos):
-    if ngos:
-        for ngo in ngos:
-            st.subheader(ngo['name'])
-            st.write(f"**Description:** {ngo['description']}")
-            st.write("---")
-    else:
-        st.write("No NGOs found matching your criteria.")
+    ngos = ngo_db.get_ngos()
+    for ngo in ngos:
+        display_ngo_dashboard(ngo_db,ngo)
 
 def process_donation(ngo_name, amount):
     # Implement blockchain transaction logic here

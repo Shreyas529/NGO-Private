@@ -38,7 +38,7 @@ class NGO_Database:
         except auth.ExpiredIdTokenError:
             raise Exception("Token expired. Please log in again.")
 
-    def add_NGO(self, id_token, NGO_name, NGO_category, image_logo, description, phone):
+    def add_NGO(self, id_token, NGO_name, NGO_category, image_logo, description, phone,needs):
         uid = self.authenticate_user(id_token)
         if not uid:
             raise Exception("User not authenticated")
@@ -50,7 +50,8 @@ class NGO_Database:
             u'Category': NGO_category,
             u'Description': description,
             u'Phone': phone,
-            u'Logo': self.imageUploader.upload_image(image_logo, "logos")  # Store logo in "logos" directory
+            u'Logo': self.imageUploader.upload_image(image_logo, "NGO_Logos") ,
+            u'needs': needs
         })
 
     def update_NGO_Category(self, id_token, NGO_name, category):
@@ -92,3 +93,12 @@ class NGO_Database:
         docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
         for doc in docs:
             doc.reference.update({u'Logo': self.imageUploader.upload_image(image_logo, "logos")})
+            
+    #function to get NGOs
+    def get_ngos(self):
+              
+        docs = self.db.collection(u'NGO').stream()
+        ngos = []
+        for doc in docs:
+            ngos.append(doc.to_dict())
+        return ngos

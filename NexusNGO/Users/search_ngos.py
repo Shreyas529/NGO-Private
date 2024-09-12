@@ -1,8 +1,8 @@
 import streamlit as st
-from firebase.firebase_config import initialize_firebase
-from firebase.db_interaction import search_ngos_by_items
+from Firebase.cred import initialize_firebase
+from Firebase.db_interaction import NGO_Database
 
-def search_ngos():
+def search_ngos(db):
     st.header("Search NGOs")
     st.write("Enter keywords or item names to find relevant NGOs.")
 
@@ -12,13 +12,14 @@ def search_ngos():
     if st.button("Search"):
         if search_query:
             # Initialize Firebase
-            db = initialize_firebase()
+            # db = initialize_firebase()
+            ngo_db = NGO_Database(db)
 
             # Split the query into keywords
             keywords = search_query.lower().split()
 
             # Fetch matching NGOs from Firestore
-            ngos = search_ngos_by_items(db, keywords)
+            ngos = ngo_db.search_NGO_by_items(keywords)
 
             # Display matching NGOs
             display_ngos(ngos)
@@ -28,8 +29,8 @@ def search_ngos():
 def display_ngos(ngos):
     if ngos:
         for ngo in ngos:
-            st.subheader(f"NGO: {ngo['name']}")
-            st.write(f"**Description**: {ngo['description']}")
+            st.subheader(f"NGO: {ngo['Name']}")
+            st.write(f"**Description**: {ngo['Description']}")
             st.write(f"**Needs**: {', '.join(ngo['needs'])}")
             st.write("---")
     else:
