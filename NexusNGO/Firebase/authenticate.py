@@ -26,8 +26,7 @@ def authenticate_ngo(email, password):
 def create_user(email, password):
     FIREBASE_API_KEY=os.getenv("FIREBASE_API_KEY")
     
-    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key
-    ={FIREBASE_API_KEY}"
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}"
 
     payload = {
         "email": email,

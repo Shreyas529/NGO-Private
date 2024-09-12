@@ -1,7 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, auth, firestore, storage
 import uuid
-from firebase_config import intialize_firebase
+from Firebase.cred import initialize_firebase
 
 
 class ImageDatabase:

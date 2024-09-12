@@ -3,7 +3,7 @@
 
 from groq import Groq
 import base64
-from Image_Detection.prompts import image_prompt, text_prompt, categorise_prompt
+from prompts import image_prompt, text_prompt, categorise_prompt
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -81,8 +81,9 @@ class Response:
 # Function to encode the image
 def encode_image(image_path):
   with open(image_path, "rb") as image_file:
-    return base64.b64encode(image_file.read()).decode('utf-8')
+    return base64.b64encode(image_file.read()).decode("utf-8")
 
 # Path to your image
-response=Response("image",encode_image("download.jpeg"))
-
+if __name__ == "__main__":
+    response=Response("image",encode_image("/home/shreyasarun/Documents/Hackathons/Collosus/NGO-Private/NexusNGO/Screenshot from 2024-05-08 18-14-12.png"))
+    response._categorise_objects_to_NGO(["Education","Health","Environment"])

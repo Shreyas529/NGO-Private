@@ -3,7 +3,7 @@ from PIL import Image
 import requests
 
 # Import necessary functions from other modules
-from ai_model.detect_object import detect_object
+from Image_Detection.image_to_text import Response , encode_image
 from firebase.firebase_config import initialize_firebase
 from firebase.db_interaction import search_ngos_by_items, get_top_ngos
 from firebase.storage_interaction import upload_image_to_firebase
@@ -66,7 +66,7 @@ def donate_items(db):
         st.success("Image uploaded successfully!")
 
         # Use AI model to detect objects in the image
-        detected_items = detect_object(image_url)
+        detected_items = Response("image", encode_image(image_url))
         st.write(f"**Detected Items:** {', '.join(detected_items)}")
 
         # Search for NGOs that need these items
