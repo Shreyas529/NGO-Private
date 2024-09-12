@@ -6,6 +6,11 @@ from Image_Detection.image_to_text import Response, encode_image
 from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
 from Ngos.ngo_interface import display_ngo_dashboard
+from Firebase.db_interaction import ImageDatabase
+import base64
+import requests
+from io import BytesIO
+from PIL import Image
 
 
 def user_ui(db):
@@ -132,6 +137,13 @@ def display_top_ngos(ngo_db):
             st.write(f"**Needs**: {', '.join(ngo['needs'])}")
         else:
             st.write("**Needs**: Not specified")
+        if "Logo" in ngo:
+            image=ImageDatabase().get_image(ngo['Logo'])
+
+            try:
+                st.image(image, caption="NGO Logo", use_column_width=True)
+            except:
+                pass
         
         # st.write(f"**Funds Received**: ${ngo.get('funds_received', 0):,}")
         st.write("---")

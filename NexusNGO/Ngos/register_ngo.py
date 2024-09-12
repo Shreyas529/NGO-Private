@@ -3,6 +3,7 @@ from Firebase.cred import initialize_firebase
 from Firebase.authenticate import create_user  # Use Firebase function for creating new users
 from Firebase.db_interaction import NGO_Database  # Use NGO_Database to interact with Firestore
 import base64
+import time
 # from Image_Detection.image_to_text import *
 
 def ngo_registration(db):
@@ -26,7 +27,7 @@ def ngo_registration(db):
 
             # Create a new Firebase user
             id_token = create_user(email, password)
-
+            time.sleep(1)
             if id_token:
                 # Prepare data
                 needs_list = [item.strip().lower() for item in needs.split(',')]
@@ -41,7 +42,7 @@ def ngo_registration(db):
                 # Register the NGO in Firestore
                 image_bytes = image_logo.read()
                 encoded_image = base64.b64encode(image_bytes).decode('utf-8')
-                ngo_db.add_NGO(id_token, ngo_name, "General", encoded_image, description, phone,needs_list)
+                ngo_db.add_NGO(id_token, ngo_name, "General", encoded_image, description, phone,needs_list,email)
                 st.success("NGO Registered Successfully!")
             else:
                 st.error("Failed to register. Please try again.")

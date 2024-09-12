@@ -1,6 +1,7 @@
 import streamlit as st
 from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
+from Firebase.db_interaction import ImageDatabase
 
 def display_top_ngos(db):
     st.header("Top NGOs")
@@ -10,15 +11,20 @@ def display_top_ngos(db):
     ngo_db = NGO_Database(db)
 
     # Get the top NGOs from Firestore database
-    ngos = ngo_db.get_top_NGOs()
+    ngos = ngo_db.get_ngos()
+    print(ngos)
 
     if ngos:
         for ngo in ngos:
+            pass
             # Display each NGO's name and description
-            st.subheader(f"NGO: {ngo['Name']}")
-            st.write(f"**Description**: {ngo['Description']}")
-            st.write(f"**Funds Received**: ${ngo['funds_received']:,}")
-            st.write("---")
+            # st.subheader(f"NGO: {ngo['Name']}")
+            # st.write(f"**Description**: {ngo['Description']}")
+            # # st.write(f"**Funds Received**: ${ngo['funds_received']:,}")
+            # st.write("---")
+            
+            # print("Logo",ngo['Logo'])
+            # st.image(ImageDatabase().get_image(ngo['Logo']), use_column_width=True)
     else:
         st.write("No NGOs available to display at the moment.")
 

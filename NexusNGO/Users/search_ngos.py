@@ -1,6 +1,7 @@
 import streamlit as st
 from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
+from Firebase.db_interaction import ImageDatabase
 
 def search_ngos(db):
     st.header("Search NGOs")
@@ -28,11 +29,13 @@ def search_ngos(db):
 
 def display_ngos(ngos):
     if ngos:
+        
         for ngo in ngos:
             st.subheader(f"NGO: {ngo['Name']}")
             st.write(f"**Description**: {ngo['Description']}")
             st.write(f"**Needs**: {', '.join(ngo['needs'])}")
             st.write("---")
+            st.image(ImageDatabase().get_image(ngo['Logo']), use_column_width=True)
     else:
         st.write("No NGOs match your search criteria.")
 

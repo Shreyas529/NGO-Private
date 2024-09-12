@@ -35,7 +35,7 @@ def create_user(email, password):
     }
 
     response = requests.post(url, json=payload)
-
+    print(response.json())
     if response.status_code == 200:
         id_token = response.json()['idToken']
         return id_token

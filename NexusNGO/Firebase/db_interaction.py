@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, auth, firestore, storage
 import uuid
 from Firebase.cred import initialize_firebase
+from PIL import Image
 
 
 class ImageDatabase:
@@ -17,7 +18,9 @@ class ImageDatabase:
 
     def get_image(self, image_path):
         blob = self.bucket.blob(image_path)
-        return blob.public_url
+        blob.make_public()
+        blob.download_to_filename("temp.png")
+        return Image.open("temp.png")
 
 class NGO_Database:
     def __init__(self,db) -> None:
@@ -38,7 +41,7 @@ class NGO_Database:
         except auth.ExpiredIdTokenError:
             raise Exception("Token expired. Please log in again.")
 
-    def add_NGO(self, id_token, NGO_name, NGO_category, image_logo, description, phone,needs):
+    def add_NGO(self, id_token, NGO_name, NGO_category, image_logo, description, phone,needs,email):
         uid = self.authenticate_user(id_token)
         if not uid:
             raise Exception("User not authenticated")
@@ -51,7 +54,8 @@ class NGO_Database:
             u'Description': description,
             u'Phone': phone,
             u'Logo': self.imageUploader.upload_image(image_logo, "NGO_Logos") ,
-            u'needs': needs
+            u'needs': needs,
+            u'email':email
         })
 
     def update_NGO_Category(self, id_token, NGO_name, category):
