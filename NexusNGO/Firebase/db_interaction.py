@@ -86,6 +86,16 @@ class NGO_Database:
         docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
         for doc in docs:
             doc.reference.update({u'Phone': phone})
+            
+    def update_NGO_Needs(self, id_token, NGO_name, needs):
+        uid = self.authenticate_user(id_token)
+        if not uid:
+            raise Exception("User not authenticated")
+
+        # Proceed with updating needs
+        docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+        for doc in docs:
+            doc.reference.update({u'needs': needs})
 
     def update_NGO_Logo(self, id_token, NGO_name, image_logo):
         uid = self.authenticate_user(id_token)
