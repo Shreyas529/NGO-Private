@@ -1,4 +1,4 @@
-image_prompt="""Describe the image with distinct items that can be donated. \n\n Ignore people or animals in the image."""
+image_prompt="""Describe the image with distinct items that can be donated. \n\n Ignore people or animals in the image. Do not hallucinate objects that aren't present in the image. \n\n. Do not give a description. Just the objects that can be donated. Return the output in the format: [object1, object2, object3]"""
 
 text_prompt="""Identify objects or items in this text that can be donated. \n\n Text: {text} \n\n. Do not give a description. Just the objects that can be donated.Return the output in the format: [object1, object2, object3]"""
 

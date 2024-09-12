@@ -61,8 +61,6 @@ class Response:
     
     def _categorise_objects_to_NGO(self,NGO_DATA):
 
-        print(categorise_prompt.format(NGO_DATA=f"{NGO_DATA}",objects=",".join(self.objects)))
-
         chat_completion = self.client.chat.completions.create(
             messages=[
             {

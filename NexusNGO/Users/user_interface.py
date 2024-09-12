@@ -56,55 +56,77 @@ def user_ui(db):
     elif option == "Top NGOs":
         display_top_ngos(ngo_db)
 
+import streamlit as st
+from PIL import Image
+import base64
+from io import BytesIO
+
 def donate_items(ngo_db):
-    st.header("Donate Items")
+    # Page header
+    st.markdown("<h1 style='text-align: center; color: #FF6F61;'>👐 Donate Items</h1>", unsafe_allow_html=True)
     st.write("You can either upload an image of the item or describe it to find matching NGOs.")
 
-    # Let the user choose between uploading an image or providing a description using selectbox
-    option = st.selectbox("Choose your method of donation:", ("Upload an Image", "Describe the Item"))
+    # Choose method of donation (image or description)
+    option = st.selectbox(
+        "How would you like to proceed?",
+        ("📸 Upload an Image", "📝 Describe the Item")
+    )
 
-    if option == "Upload an Image":
-        # Option to upload image
-        uploaded_image = st.file_uploader("Upload an image of the item", type=["jpg", "jpeg", "png"])
+    if option == "📸 Upload an Image":
+        # Image upload option
+        st.subheader("Upload an Image of the Item")
+        uploaded_image = st.file_uploader("Upload an image of the item (jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
 
         if uploaded_image:
-            # Display the uploaded image
+            # Display uploaded image
             image = Image.open(uploaded_image)
-            st.image(image, caption='Uploaded Image', use_column_width=True)
+            st.image(image, caption='🖼 Uploaded Image', use_column_width=True)
+            
+            # Convert image to base64 for processing
             buffer = BytesIO()
-            image.save(buffer, format="PNG")  # Save the image in buffer
+            image.save(buffer, format="PNG")
             image_bytes = buffer.getvalue()
-
             encoded_image = base64.b64encode(image_bytes).decode('utf-8')
 
-            # Encode and detect objects using the image
+            # Process image (object detection)
             response_object = Response("image", encoded_image)
             detected_items = response_object.objects
 
-            st.write(f"**Detected Items:** {', '.join(detected_items)}")
+            # Display detected items
+            st.markdown(f"<h3 style='color: #333;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
 
-            if st.button("Find NGOs"):
+            # Button to find matching NGOs
+            if st.button("🔍 Find Matching NGOs"):
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
-                resp=response_object._categorise_objects_to_NGO(ngo_item_mapping)
-                resp=[resp[i].replace("'","") for i in range(len(resp))]
+                resp = response_object._categorise_objects_to_NGO(ngo_item_mapping)
+                print(resp)
+                resp = [resp[i].replace("'", "") for i in range(len(resp))]
+
+                # Display matching NGOs
+                st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs:</h3>", unsafe_allow_html=True)
                 markdown_list = "\n".join([f"- {item}" for item in resp])
                 st.markdown(markdown_list)
-                st.write("Matching NGOs found...")
-                
-    elif option == "Describe the Item":
-        # Option to describe the item
-        st.subheader("Describe the Item")
-        item_description = st.text_area("Describe the item you wish to donate")
-        
-        if st.button("Find NGOs"):
+                # st.markdown(f"<div style='background-color: #f5f5f5; padding: 15px; border-radius: 10px;'>{markdown_list}</div>", unsafe_allow_html=True)
+                st.success("✨ Matching NGOs found!")
+    
+    elif option == "📝 Describe the Item":
+        # Description option
+        st.subheader("Describe the Item You Wish to Donate")
+        item_description = st.text_area("📝 Describe the item you wish to donate", height=150, max_chars=300)
+
+        # Button to find NGOs based on description
+        if st.button("🔍 Find Matching NGOs"):
             if item_description:
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
-                # Perform search or matching logic based on item_description
-                st.write("Matching NGOs found...")
+                
+                # Perform matching logic here...
+                st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
+                st.success("✨ Matching NGOs found based on your item description!")
             else:
-                st.warning("Please enter a description of the item.")
+                st.warning("⚠️ Please enter a description of the item.")
+
 
 
 def donate_funds(ngo_db):
