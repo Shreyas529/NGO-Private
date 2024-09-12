@@ -12,13 +12,12 @@ class ImageDatabase:
     def upload_image(self, base64_image, directory):
         filename = directory + "/" + str(uuid.uuid4()) + ".png"
         blob = self.bucket.blob(filename)
-        blob.upload_from_string(base64_image)
+        blob.upload_from_string(base64_image,content_type="image/png")
         blob.make_public()
         return filename
 
     def get_image(self, image_path):
         blob = self.bucket.blob(image_path)
-        blob.make_public()
         blob.download_to_filename("temp.png")
         return Image.open("temp.png")
 
