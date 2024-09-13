@@ -37,6 +37,7 @@ class Response:
             }
         ],
         model="llava-v1.5-7b-4096-preview",
+        temperature=0
     )
         response=chat_completion.choices[0].message.content
     
@@ -52,7 +53,7 @@ class Response:
                   text_prompt.format(text=self.content),
             }
         ],
-        model="llama-3.1-70b-versatile")
+        model="llama-3.1-70b-versatile",temperature=0)
 
         response=chat_completion.choices[0].message.content
         response=response[response.find("[")+1:response.find("]")]
@@ -69,7 +70,8 @@ class Response:
                      categorise_prompt.format(NGO_DATA=f"{NGO_DATA}",objects=",".join(self.objects)),
             }
         ],
-        model="llama-3.1-70b-versatile")
+        model="llama-3.1-70b-versatile",
+        temperature=0)
 
         response=chat_completion.choices[0].message.content
         

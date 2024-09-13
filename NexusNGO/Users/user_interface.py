@@ -11,6 +11,7 @@ import base64
 import requests
 from io import BytesIO
 from PIL import Image
+import pandas as pd
 
 
 def user_ui(db):
@@ -89,44 +90,122 @@ def donate_items(ngo_db):
             encoded_image = base64.b64encode(image_bytes).decode('utf-8')
 
             # Process image (object detection)
-            response_object = Response("image", encoded_image)
-            detected_items = response_object.objects
+        
 
             # Display detected items
-            st.markdown(f"<h3 style='color: #333;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
 
             # Button to find matching NGOs
             if st.button("🔍 Find Matching NGOs"):
+            
+                response_object=Response("image",encoded_image)
+                detected_items = response_object.objects
+                st.markdown(f"<h3 style='color: #333;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
                 resp = response_object._categorise_objects_to_NGO(ngo_item_mapping)
-                print(resp)
-                resp = [resp[i].replace("'", "") for i in range(len(resp))]
+                resp = [resp[i].replace("'", "") for i in range(len(resp)) if resp[i]!=""]
+                
 
-                # Display matching NGOs
-                st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs:</h3>", unsafe_allow_html=True)
-                markdown_list = "\n".join([f"- {item}" for item in resp])
-                st.markdown(markdown_list)
-                # st.markdown(f"<div style='background-color: #f5f5f5; padding: 15px; border-radius: 10px;'>{markdown_list}</div>", unsafe_allow_html=True)
-                st.success("✨ Matching NGOs found!")
+                data = {"NGO Name": resp}
+                data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'] in data["NGO Name"]]
+                print(data)
+                df = pd.DataFrame(data)
+
+                # Apply styling to the DataFrame
+                styled_df = df.style.set_properties(**{
+                    'background-color': '#f5f5f5',
+                    'color': '#333',
+                    'border-color': '#FF6F61',
+                    'border-width': '2px',
+                    'border-style': 'solid',
+                    'text-align': 'left'
+                }).set_table_styles([
+                    {
+                        'selector': 'thead th',
+                        'props': [('background-color', '#FF6F61'), ('color', 'white')]
+                    }
+                ])
+
+                st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
+                
+                col1, col2, col3 = st.columns([3, 2, 1])
+                col1.markdown("**NGO Name**")
+                col2.markdown("**Contact**")
+                col3.markdown("")
+
+                # Display each row in the table with a "View More" button
+                for i, row in df.iterrows():
+                    ngo = ngo_data[i]
+                    col1, col2, col3 = st.columns([3, 2, 1])
+
+                    col1.write(row["NGO Name"])
+                    col2.write(row["Contact"])
+                    
+                    if col3.button("View More", key=row["NGO Name"]):
+                        st.session_state.selected_ngo = ngo  # Save selected NGO details in session state
+                        st.rerun()  # Refresh to navigate to the details page
+            
+
+
     
     elif option == "📝 Describe the Item":
         # Description option
         st.subheader("Describe the Item You Wish to Donate")
         item_description = st.text_area("📝 Describe the item you wish to donate", height=150, max_chars=300)
-
+        
+        
         # Button to find NGOs based on description
         if st.button("🔍 Find Matching NGOs"):
             if item_description:
+                response_object=Response("text",item_description)
+                detected_items = response_object.objects
+                st.markdown(f"<h3 style='color: #333;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
+            if item_description:
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
-                
-                # Perform matching logic here...
+                resp = response_object._categorise_objects_to_NGO(ngo_item_mapping)
+                resp = [resp[i].replace("'", "") for i in range(len(resp))]
+
+                data = {"NGO Name": resp}
+                data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'] in data["NGO Name"]]
+
+                df = pd.DataFrame(data)
+
+                # Apply styling to the DataFrame
+                styled_df = df.style.set_properties(**{
+                    'background-color': '#f5f5f5',
+                    'color': '#333',
+                    'border-color': '#FF6F61',
+                    'border-width': '2px',
+                    'border-style': 'solid',
+                    'text-align': 'left'
+                }).set_table_styles([
+                    {
+                        'selector': 'thead th',
+                        'props': [('background-color', '#FF6F61'), ('color', 'white')]
+                    }
+                ])
+
                 st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
-                st.success("✨ Matching NGOs found based on your item description!")
+                
+                col1, col2, col3 = st.columns([3, 2, 1])
+                col1.markdown("**NGO Name**")
+                col2.markdown("**Contact**")
+                col3.markdown("")
+
+                # Display each row in the table with a "View More" button
+                for i, row in df.iterrows():
+                    ngo = ngo_data[i]
+                    col1, col2, col3 = st.columns([3, 2, 1])
+
+                    col1.write(row["NGO Name"])
+                    col2.write(row["Contact"])
+                    
+                if col3.button("View More", key=row["NGO Name"]):
+                    st.session_state.selected_ngo = ngo  # Save selected NGO details in session state
+                    st.rerun()  # Refresh to navigate to the details page
             else:
                 st.warning("⚠️ Please enter a description of the item.")
-
 
 
 def donate_funds(ngo_db):
