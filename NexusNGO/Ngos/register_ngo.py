@@ -5,7 +5,51 @@ from Firebase.db_interaction import NGO_Database  # Use NGO_Database to interact
 import time
 
 def ngo_registration(db):
-    # Set page background color and style
+    # Apply custom CSS to match app.py style
+    # st.markdown("""
+    # <style>
+    # body {
+    #     background-color: #0F2027;
+    #     background-image: linear-gradient(315deg, #0F2027 0%, #203A43 74%, #2C5364 100%);
+    #     color: white;
+    # }
+    # h1, h2, h3, h4, h5, h6 {
+    #     color: #60a5fa;
+    #     text-align: center;
+    # }
+    # p {
+    #     color: white;
+    #     text-align: center;
+    # }
+    # .stButton > button {
+    #     background-color: #FF4B4B ;
+    #     color: white;
+    #     border-radius: 30px;
+    #     padding: 10px 24px;
+    #     border: none;
+    #     font-size: 16px;
+    #     font-weight: 600;
+    #     transition: all 0.3s ease;
+    #     margin: 0 10px;
+    #     width: 200px;
+    # }
+    # .stButton > button:hover {
+    #     background-color: #FFFFFF ;
+    #     color: #FF4B4B ;
+    #     transform: scale(1.05);
+    #     font-weight: bold;
+    # }
+    # .stTextInput, .stTextArea, .stFileUploader {
+    #     background-color: #1e3c72 ;
+    #     color: white;
+    #     border: none;
+    #     border-radius: 10px;
+    # }
+    # .stTextInput > input, .stTextArea > textarea, .stFileUploader > div {
+    #     color: white ;
+    # }
+    # </style>
+    # """, unsafe_allow_html=True)
     st.markdown("""
     <style>
     body {
@@ -14,10 +58,10 @@ def ngo_registration(db):
         color: white;
     }
     h1, h2, h3, h4, h5, h6 {
-        color: #60a5fa;
+        color: #60a5fa !important;
     }
     .stButton > button {
-        background-color: #FF6F61 !important;  /* Update button color */
+        background-color: #FF4B4B !important;  /* Update button color */
         color: white;
         border-radius: 30px;
         padding: 10px 24px;
@@ -30,29 +74,16 @@ def ngo_registration(db):
     }
     .stButton > button:hover {
         background-color: #FFFFFF !important;  /* Hover effect */
-        color: #FF6F61 !important;
+        color: #FF4B4B !important;
         transform: scale(1.05);
         font-weight: bold;
-    }
-    .stTextInput, .stTextArea {
-        background-color: #1e3c72 !important;  /* Matching input box with dark theme */
-        color: white;
-        border: none;
-        border-radius: 10px;
-    }
-    .stTextInput > input, .stTextArea > textarea {
-        color: white !important;
-    }
-    .stFileUploader {
-        background-color: #1e3c72 !important;
-        border-radius: 10px;
-        color: white !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h2 style='text-align: center; color: #60a5fa;'>NGO Registration</h2>", unsafe_allow_html=True)
-    st.write("<p style='text-align: center;'>Fill out the form below to register your NGO.</p>", unsafe_allow_html=True)
+    # Page title and description
+    st.markdown("<h2>NGO Registration</h2>", unsafe_allow_html=True)
+    st.markdown("<p>Fill out the form below to register your NGO.</p>", unsafe_allow_html=True)
 
     # Input fields for NGO registration with consistent style
     ngo_name = st.text_input("NGO Name", max_chars=100, key="ngo_name")

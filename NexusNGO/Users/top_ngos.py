@@ -4,7 +4,7 @@ from Firebase.db_interaction import NGO_Database
 from Firebase.db_interaction import ImageDatabase
 
 def display_top_ngos(db):
-    st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🌟 Top NGOs</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🌟 Top NGOs</h1>", unsafe_allow_html=True)
 
     # Initialize Firebase
     ngo_db = NGO_Database(db)
@@ -15,7 +15,7 @@ def display_top_ngos(db):
     if ngos:
         for ngo in ngos:
             # Display each NGO's name and description
-            st.markdown(f"<h3 class='fade-in' style='color: #FF6F61;'>NGO: {ngo['Name']}</h3>", unsafe_allow_html=True)
+            st.markdown(f"<h3 class='fade-in' style='color: #FF4B4B;'>NGO: {ngo['Name']}</h3>", unsafe_allow_html=True)
             st.write(f"**Description**: {ngo.get('Description', 'No description available')}")
             st.write("---")
 
@@ -48,7 +48,7 @@ st.markdown("""
             to { opacity: 1; }
         }
         .stButton > button {
-            background-color: #FF6F61; 
+            background-color: #FF4B4B; 
             color: white;
             border-radius: 30px;
             padding: 10px 24px;
@@ -61,7 +61,7 @@ st.markdown("""
         }
         .stButton > button:hover {
             background-color: white;
-            color: #FF6F61;
+            color: #FF4B4B;
             transform: scale(1.05);
             font-weight: bold;
         }

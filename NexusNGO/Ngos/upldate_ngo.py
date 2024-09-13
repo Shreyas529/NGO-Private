@@ -49,7 +49,7 @@ st.markdown("""
         border-radius: 15px;
     }
     .stButton > button {
-        background-color: #FF6F61 !important; /* Ensure the button uses the correct color */
+        background-color: #FF4B4B !important; /* Ensure the button uses the correct color */
         color: white !important;
         border-radius: 30px;
         padding: 10px 24px;
@@ -62,7 +62,7 @@ st.markdown("""
     }
     .stButton > button:hover {
         background-color: #FFFFFF !important; /* Ensure hover effect works */
-        color: #FF6F61 !important;
+        color: #FF4B4B !important;
         transform: scale(1.05);
         font-weight: bold;
     }
