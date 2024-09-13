@@ -1,4 +1,4 @@
-image_prompt="""Describe the image and write a image caption"""
+image_prompt="""Identify the objects in the given image. Identify only the main objects in focus"""
 
 text_prompt="""Identify objects or items in this text that can be donated. \n\n Text: {text} \n\n. Do not give a description. Just the objects that can be donated.Return the output in the format: [object1, object2, object3]"""
 

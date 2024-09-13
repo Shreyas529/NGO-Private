@@ -3,10 +3,11 @@
 
 from groq import Groq
 import base64
-from Image_Detection.prompts import image_prompt, text_prompt, categorise_prompt
+from prompts import image_prompt, text_prompt, categorise_prompt
 from dotenv import load_dotenv
 load_dotenv()
-
+import requests
+import os
 
 class Response:
     def __init__(self, type:str, content):
@@ -40,7 +41,7 @@ class Response:
         temperature=0
     )
         response=chat_completion.choices[0].message.content
-    
+        print(response)
         return response
     
     def _handle_text(self):
@@ -88,5 +89,5 @@ def encode_image(image_path):
 
 # Path to your image
 if __name__ == "__main__":
-    response=Response("image",encode_image("/home/sathvik_rao/Colossus/NGO-Private/NexusNGO/temp.png"))
+    response=Response("image",encode_image("/home/sathvik_rao/Colossus/NGO-Private/NexusNGO/download.jpeg"))
     response._categorise_objects_to_NGO(["Education","Health","Environment"])
