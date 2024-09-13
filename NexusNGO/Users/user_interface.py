@@ -6,6 +6,7 @@ import pandas as pd
 
 # Import necessary functions from other modules
 from Image_Detection.image_to_text import Response, encode_image
+from streamlit_option_menu import option_menu
 from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
 from Firebase.db_interaction import ImageDatabase
@@ -23,7 +24,7 @@ def user_ui(db):
             font-family: 'Arial', sans-serif;
         }
         .stButton > button {
-            background-color: #FF6F61; /* Consistent color with app.py */
+            background-color: #FF4B4B; /* Consistent color with app.py */
             color: white;
             border-radius: 30px;
             padding: 10px 24px;
@@ -36,9 +37,27 @@ def user_ui(db):
         }
         .stButton > button:hover {
             background-color: #FFFFFF; /* Hover effect */
-            color: #FF6F61;
+            color: #FF4B4B;
             transform: scale(1.05);
             font-weight: bold;
+        }
+        
+        .css-1d391kg {  /* Targets the sidebar */
+        background: linear-gradient(to bottom, #1a202c, #000000);
+        }
+        .css-1d391kg > div { /* This centers the content within the sidebar */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .css-1d391kg .css-2vl3m9 {  /* Targets the option menu */
+            background-color: transparent;  /* Keep transparent to show gradient */
+        }
+        .css-2vl3m9 .nav-item {  /* Aligns the individual nav items to center */
+            text-align: center;
+            width: 100%;
         }
         .header {
             text-align: center;
@@ -68,8 +87,10 @@ def user_ui(db):
     """, unsafe_allow_html=True)
 
     # Sidebar navigation with fade-in effect
-    st.sidebar.title("Navigation")
-    option = st.sidebar.radio("", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"], key="nav_option")
+    # st.sidebar.title("Navigation")
+    with st.sidebar:
+        # option = st.sidebar.radio("", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"], key="nav_option")
+        option = option_menu("Donor Navigation",["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"] ,icons=["gift", "cash" , "search" , "bar-chart"],key="nav_option")
 
     if option == "Donate Items":
         donate_items(ngo_db)
@@ -79,6 +100,7 @@ def user_ui(db):
         search_ngos(ngo_db)
     elif option == "Top NGOs":
         display_top_ngos(ngo_db)
+
 
 # Update "Donate Items" function with consistent animations and styles
 def donate_items(ngo_db):
@@ -112,7 +134,7 @@ def donate_items(ngo_db):
             if st.button("🔍 Find Matching NGOs"):
                 response_object = Response("image", encoded_image)
                 detected_items = response_object.objects
-                st.markdown(f"<h3 class='fade-in-slow' style='color: #FF6F61;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 class='fade-in-slow' style='color: #FF4B4B;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
                 
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
@@ -123,7 +145,7 @@ def donate_items(ngo_db):
                 df = pd.DataFrame(data)
 
                 # Display matching NGOs
-                st.markdown("<h3 class='fade-in' style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 class='fade-in' style='color: #FF4B4B;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
                 st.dataframe(df)
 
     elif option == "📝 Describe the Item":
@@ -135,7 +157,7 @@ def donate_items(ngo_db):
             if item_description:
                 response_object = Response("text", item_description)
                 detected_items = response_object.objects
-                st.markdown(f"<h3 class='fade-in' style='color: #FF6F61;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 class='fade-in' style='color: #FF4B4B;'>🔍 Detected Items: {', '.join(detected_items)}</h3>", unsafe_allow_html=True)
                 
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
@@ -144,10 +166,11 @@ def donate_items(ngo_db):
                 data = {"NGO Name": resp}
                 data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'] in data["NGO Name"]]
                 df = pd.DataFrame(data)
-                st.markdown("<h3 class='fade-in' style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 class='fade-in' style='color: #FF4B4B;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
                 st.dataframe(df)
             else:
                 st.warning("⚠️ Please enter a description of the item.")
+
 
 def donate_funds(ngo_db):
     st.markdown("<h1 class='header section-header fade-in'>💰 Donate Funds</h1>", unsafe_allow_html=True)
@@ -163,6 +186,7 @@ def donate_funds(ngo_db):
         transaction_id = process_donation(selected_ngo, amount)
         st.success(f"Thank you for your donation! Transaction ID: {transaction_id}")
 
+
 def search_ngos(ngo_db):
     st.markdown("<h1 class='header section-header fade-in'>🔍 Search NGOs</h1>", unsafe_allow_html=True)
     search_query = st.text_input("Enter keywords to search for NGOs:")
@@ -173,6 +197,7 @@ def search_ngos(ngo_db):
             display_ngo_dashboard(ngos)
         else:
             st.warning("⚠️ Please enter keywords to search.")
+
 
 def display_top_ngos(ngo_db):
     st.markdown("<h1 class='header section-header fade-in'>🌟 Top NGOs</h1>", unsafe_allow_html=True)
@@ -189,9 +214,11 @@ def display_top_ngos(ngo_db):
         st.write(f"**Needs**: {', '.join(ngo.get('needs', []))}")
         st.write("---")
 
+
 def process_donation(ngo_name, amount):
     transaction_id = "TXN" + str(hash(f"{ngo_name}{amount}"))
     return transaction_id
+
 
 # Run the user interface
 if __name__ == "__main__":

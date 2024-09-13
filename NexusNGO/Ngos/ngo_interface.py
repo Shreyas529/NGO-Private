@@ -20,7 +20,7 @@ def ngo_interface(db):
         color: #60a5fa !important;
     }
     .stButton > button {
-        background-color: #FF6F61 !important;  /* Update button color */
+        background-color: #FF4B4B !important;  /* Update button color */
         color: white;
         border-radius: 30px;
         padding: 10px 24px;
@@ -33,7 +33,7 @@ def ngo_interface(db):
     }
     .stButton > button:hover {
         background-color: #FFFFFF !important;  /* Hover effect */
-        color: #FF6F61 !important;
+        color: #FF4B4B !important;
         transform: scale(1.05);
         font-weight: bold;
     }

@@ -6,7 +6,7 @@ import time
 
 def search_ngos(db):
     # Page header with consistent design
-    st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🔍 Search NGOs</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🔍 Search NGOs</h1>", unsafe_allow_html=True)
     st.write("Enter keywords or item names to find relevant NGOs and their needs.")
 
     # Input field for search query
@@ -34,7 +34,7 @@ def search_ngos(db):
 
 def display_ngos(ngos):
     if ngos:
-        st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #FF4B4B;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
         
         # Loop through the NGOs and display each with consistent design
         for ngo in ngos:
@@ -51,7 +51,7 @@ def display_ngos(ngos):
             st.write("---")  # Divider for each NGO
     else:
         # Display no matching results found
-        st.markdown("<h3 style='color: #FF6F61;'>🚫 No matching NGOs found</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #FF4B4B;'>🚫 No matching NGOs found</h3>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     search_ngos()
