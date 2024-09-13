@@ -4,6 +4,7 @@ from Firebase.cred import initialize_firebase
 from Users.user_interface import user_ui
 from Ngos.ngo_interface import ngo_interface
 from Ngos.register_ngo import ngo_registration
+from Info.about_us import about_us
 
 # Custom component for the sidebar
 def sidebar(db):
@@ -11,12 +12,18 @@ def sidebar(db):
     # ngo_action = st.sidebar.radio("Select Action", ["Login", "Register NGO"])
     
     with st.sidebar:
-        ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO"],icons=["box-arrow-in-right", "pencil-square"])
-
+        ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO","About-Us"],icons=["box-arrow-in-right", "pencil-square","info-circle"])
+        
     if ngo_action == "Login":
         ngo_interface(db)
+        
     elif ngo_action == "Register NGO":
         ngo_registration(db)
+        
+    elif ngo_action == "About-Us":
+        # st.warning("You are about to lose all unsaved data. Are you sure you want to proceed?")
+        # if st.button("Yes, Proceed"):
+        about_us()             
 
 # Function to display the main page and navigation options
 def main():
@@ -147,6 +154,7 @@ def main():
             # Donor and NGO buttons for navigation
             donor_button = st.button("I'm a Donor")
             ngo_button = st.button("I'm an NGO")
+            about_us_button = st.button("About Us")
             st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div></div>', unsafe_allow_html=True)
@@ -159,6 +167,9 @@ def main():
         elif ngo_button:
             st.session_state['role'] = 'NGO'
             st.rerun()  # Immediately rerun to hide the role selection
+        elif about_us_button:
+            about_us()
+            # st.rerun()
 
     # If role is selected, redirect to respective interface
     if st.session_state['role'] == 'Donor':

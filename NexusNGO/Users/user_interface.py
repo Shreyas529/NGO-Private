@@ -11,6 +11,7 @@ from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
 from Firebase.db_interaction import ImageDatabase
 from Ngos.ngo_interface import display_ngo_dashboard
+from Info.about_us import about_us
 
 
 def user_ui(db):
@@ -62,7 +63,7 @@ def user_ui(db):
 
     # Sidebar navigation
     with st.sidebar:
-        option = option_menu("Donor Navigation", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"], icons=["gift", "cash", "search", "bar-chart"], key="nav_option")
+        option = option_menu("Donor Navigation", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs","About-Us"], icons=["gift", "cash", "search", "bar-chart","info-circle"], key="nav_option")
 
     # If an NGO is selected, display its details
     if 'selected_ngo' in st.session_state:
@@ -76,6 +77,8 @@ def user_ui(db):
             search_ngos(ngo_db)
         elif option == "Top NGOs":
             display_top_ngos(ngo_db)
+        elif option == "About-Us":
+            about_us()
 
 
 def donate_items(ngo_db):
