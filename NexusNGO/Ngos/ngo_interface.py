@@ -17,7 +17,7 @@ def ngo_interface(db):
         color: white;
     }
     h1, h2, h3, h4, h5, h6 {
-        color: #ff8c00 !important;
+        color: #60a5fa !important;
     }
     .stButton > button {
         background-color: #FF6F61 !important;  /* Update button color */
@@ -60,7 +60,7 @@ def ngo_interface(db):
         show_login_form(db)
 
 def show_login_form(db):
-    st.markdown("<h2 style='text-align: center; color: #FF8C00;'>NGO Dashboard</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #60a5fa;'>NGO Dashboard</h2>", unsafe_allow_html=True)
     st.write("<p style='text-align: center;'>Please login to access your NGO profile.</p>", unsafe_allow_html=True)
 
     # Login form

@@ -14,7 +14,7 @@ def ngo_registration(db):
         color: white;
     }
     h1, h2, h3, h4, h5, h6 {
-        color: #ff8c00 !important;
+        color: #60a5fa;
     }
     .stButton > button {
         background-color: #FF6F61 !important;  /* Update button color */
@@ -51,7 +51,7 @@ def ngo_registration(db):
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h2 style='text-align: center; color: #FF8C00;'>NGO Registration</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #60a5fa;'>NGO Registration</h2>", unsafe_allow_html=True)
     st.write("<p style='text-align: center;'>Fill out the form below to register your NGO.</p>", unsafe_allow_html=True)
 
     # Input fields for NGO registration with consistent style
