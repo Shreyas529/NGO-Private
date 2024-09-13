@@ -198,7 +198,9 @@ def main():
 
 # Function to reset the role and go back to the landing page
 def reset_role():
-    st.session_state['role'] = None
+    # Delete all the items in Session state
+    for key in st.session_state.keys():
+        del st.session_state[key]
 
 # Run the main function
 if __name__ == "__main__":
