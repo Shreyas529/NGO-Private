@@ -2,42 +2,57 @@ import streamlit as st
 from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
 from Firebase.db_interaction import ImageDatabase
+import time
 
 def search_ngos(db):
-    st.header("Search NGOs")
-    st.write("Enter keywords or item names to find relevant NGOs.")
+    # Page header with consistent design
+    st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🔍 Search NGOs</h1>", unsafe_allow_html=True)
+    st.write("Enter keywords or item names to find relevant NGOs and their needs.")
 
     # Input field for search query
     search_query = st.text_input("Search for NGOs (e.g., clothes, food, books, etc.)")
-    
+
     if st.button("Search"):
         if search_query:
-            # Initialize Firebase
-            # db = initialize_firebase()
-            ngo_db = NGO_Database(db)
+            # Display a searching animation
+            with st.spinner("🔍 Searching for NGOs..."):
+                time.sleep(2)  # Simulate search time
 
-            # Split the query into keywords
-            keywords = search_query.lower().split()
+                # Initialize Firebase
+                ngo_db = NGO_Database(db)
 
-            # Fetch matching NGOs from Firestore
-            ngos = ngo_db.search_NGO_by_items(keywords)
+                # Split the query into keywords
+                keywords = search_query.lower().split()
 
-            # Display matching NGOs
-            display_ngos(ngos)
+                # Fetch matching NGOs from Firestore
+                ngos = ngo_db.search_NGO_by_items(keywords)
+
+                # Display matching NGOs
+                display_ngos(ngos)
         else:
-            st.warning("Please enter a keyword to search for NGOs.")
+            st.warning("⚠️ Please enter a keyword to search for NGOs.")
 
 def display_ngos(ngos):
     if ngos:
+        st.markdown("<h3 style='color: #FF6F61;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
         
+        # Loop through the NGOs and display each with consistent design
         for ngo in ngos:
-            st.subheader(f"NGO: {ngo['Name']}")
+            st.subheader(f"🌟 NGO: {ngo['Name']}")
             st.write(f"**Description**: {ngo['Description']}")
             st.write(f"**Needs**: {', '.join(ngo['needs'])}")
-            st.write("---")
-            st.image(ImageDatabase().get_image(ngo['Logo']), use_column_width=True)
+            
+            # Try to display the logo image, if available
+            try:
+                st.image(ImageDatabase().get_image(ngo['Logo']), use_column_width=True, caption="NGO Logo")
+            except:
+                st.write("No image available.")
+            
+            st.write("---")  # Divider for each NGO
     else:
-        st.write("No NGOs match your search criteria.")
+        # Display no matching results found
+        st.markdown("<h3 style='color: #FF6F61;'>🚫 No matching NGOs found</h3>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     search_ngos()
+

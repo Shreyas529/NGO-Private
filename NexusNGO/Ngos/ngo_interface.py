@@ -8,6 +8,38 @@ from Ngos.upldate_ngo import update_profile
 # db = initialize_firebase()
 
 def ngo_interface(db):
+    # Apply background and consistent style
+    st.markdown("""
+    <style>
+    body {
+        background-color: #0F2027;
+        background-image: linear-gradient(315deg, #0F2027 0%, #203A43 74%, #2C5364 100%);
+        color: white;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #ff8c00 !important;
+    }
+    .stButton > button {
+        background-color: #FF6F61 !important;  /* Update button color */
+        color: white;
+        border-radius: 30px;
+        padding: 10px 24px;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+        width: 200px;
+    }
+    .stButton > button:hover {
+        background-color: #FFFFFF !important;  /* Hover effect */
+        color: #FF6F61 !important;
+        transform: scale(1.05);
+        font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     # Check if the user is logged in
     if 'logged_in' not in st.session_state:
         st.session_state['update'] = False
@@ -16,12 +48,10 @@ def ngo_interface(db):
         st.session_state['id_token'] = None
 
     if st.session_state['logged_in']:
-        
         if st.session_state['update']:
             ngo_db = NGO_Database(db)
             ngo_data = st.session_state['ngo_data']
-            
-            update_profile(ngo_db, ngo_data )
+            update_profile(ngo_db, ngo_data)
         else:
             ngo_db = NGO_Database(db)
             ngo_data = st.session_state['ngo_data']
@@ -30,12 +60,14 @@ def ngo_interface(db):
         show_login_form(db)
 
 def show_login_form(db):
-    st.header("NGO Dashboard")
+    st.markdown("<h2 style='text-align: center; color: #FF8C00;'>NGO Dashboard</h2>", unsafe_allow_html=True)
+    st.write("<p style='text-align: center;'>Please login to access your NGO profile.</p>", unsafe_allow_html=True)
 
     # Login form
-    email = st.text_input("Enter your email")
-    password = st.text_input("Enter your password", type="password")
+    email = st.text_input("Enter your email", key="email_input")
+    password = st.text_input("Enter your password", type="password", key="password_input")
 
+    # Custom button styling for login
     if st.button("Login"):
         if email and password:
             ngo_db = NGO_Database(db)
@@ -78,10 +110,10 @@ def display_ngo_dashboard(ngo_db, ngo_data):
     st.write(f"**Description**: {ngo_data.get('Description', 'No Description')}")
     st.write(f"**Needs**: {', '.join(ngo_data.get('needs', []))}")
     
+    # Consistent button styles with hover animation
     if st.button("Update Profile"):
         st.session_state['update'] = True
         st.rerun()
-        # update_profile(ngo_db, ngo_data)
 
     if st.button("Logout"):
         st.session_state['update'] = False
@@ -92,8 +124,6 @@ def display_ngo_dashboard(ngo_db, ngo_data):
         # Use query params to refresh the page after logout
         st.experimental_set_query_params(logged_in=False)
         st.rerun()
-
-
 
 if __name__ == "__main__":
     ngo_interface()
