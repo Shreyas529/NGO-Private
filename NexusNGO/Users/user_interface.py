@@ -12,6 +12,7 @@ from Firebase.db_interaction import NGO_Database
 from Firebase.db_interaction import ImageDatabase
 from Ngos.ngo_interface import display_ngo_dashboard
 from blockchain.blockchain import get_transactions_last_3_minutes
+from Info.about_us import about_us
 
 import os  
 import pandas as pd
@@ -98,7 +99,7 @@ def user_ui(db):
     # st.sidebar.title("Navigation")
     with st.sidebar:
         # option = st.sidebar.radio("", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"], key="nav_option")
-        option = option_menu("Donor Navigation",["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs","Blockchain Transactions"] ,icons=["gift", "cash" , "search" , "bar-chart","currency-exchange"],key="nav_option")
+        option = option_menu("Donor Navigation",["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs","Blockchain Transactions","About Us"] ,icons=["gift", "cash" , "search" , "bar-chart","currency-exchange","info-circle"],key="nav_option")
 
     if option == "Donate Items":
         donate_items(ngo_db)
@@ -110,6 +111,8 @@ def user_ui(db):
         display_top_ngos(ngo_db)
     elif option == "Blockchain Transactions":
         transaction_page(ngo_db)
+    elif option == "About Us":
+        about_us()
 
 
 # Update "Donate Items" function with consistent animations and styles
@@ -253,15 +256,36 @@ if __name__ == "__main__":
 
 
 def search_ngos(ngo_db):
-    st.markdown("<h1 class='header section-header fade-in'>🔍 Search NGOs</h1>", unsafe_allow_html=True)
-    search_query = st.text_input("Enter keywords to search for NGOs:")
-    if st.button("Search"):
-        if search_query:
-            keywords = search_query.split()
-            ngos = ngo_db.search_NGO_by_items(keywords)
-            display_ngo_dashboard(ngos)
+    st.markdown("<h1>🔍 Search NGOs by Name</h1>", unsafe_allow_html=True)
+    search_query = st.text_input("Search for NGOs by name:")
+
+    if search_query:
+        ngo_data = ngo_db.get_ngos()  # Fetch all NGO data
+        filtered_ngos = [ngo for ngo in ngo_data if search_query.lower() in ngo['Name'].lower()]
+
+        if filtered_ngos:
+            for ngo in filtered_ngos:
+                ngo_name = ngo['Name']
+                ngo_phone = ngo.get('Phone', 'No phone available')
+                ngo_email = ngo.get('email', 'No email available')
+
+                # NGO description in Markdown format (assume this is pre-formatted in Markdown)
+                ngo_description = ngo.get('Description', 'No description available')
+                print(ngo_description.replace("\\n", "\n"))
+
+                with st.expander(f"{ngo_name}"):
+                    st.write(f"*Phone:* {ngo_phone}")
+                    st.write(f"*Email:* {ngo_email}")
+
+                    # Render description as markdown
+                    st.markdown(ngo_description)
+
+                    # Display needs (if available) at the end
+                    ngo_needs = ngo.get('needs', [])
+                    if ngo_needs:
+                        st.write(f"*Needs:* {', '.join(ngo_needs)}")
         else:
-            st.warning("⚠️ Please enter keywords to search.")
+            st.write("No NGOs found with that name.")
 
 
 def display_top_ngos(ngo_db):
