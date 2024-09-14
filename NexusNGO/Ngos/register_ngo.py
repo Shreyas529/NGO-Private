@@ -87,7 +87,7 @@ def ngo_registration(db):
 
     # Input fields for NGO registration with consistent style
     ngo_name = st.text_input("NGO Name", max_chars=100, key="ngo_name")
-    description = st.text_area("NGO Description", max_chars=500, key="description")
+    description = st.text_area("NGO Description", max_chars=3000, key="description")
     email = st.text_input("Contact Email", key="email")
     password = st.text_input("Create Password", type="password", key="password")
     needs = st.text_area("List of Needs (e.g., food, clothes, books)", help="Separate items by commas", key="needs")

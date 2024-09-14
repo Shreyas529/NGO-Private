@@ -9,13 +9,15 @@ from datetime import datetime
 import os
 from blockchain.blockchain import get_transactions_last_3_minutes
 from Firebase.db_interaction import NGO_Database
+from Ngos.upldate_ngo import update_profile
 
 # Custom component for the sidebar
 def sidebar(db):
     # st.sidebar.title("NGO Navigation")
     # ngo_action = st.sidebar.radio("Select Action", ["Login", "Register NGO"])
     if st.session_state.get("logged_in"):
-            pass
+        ngo_interface(db)
+        
     else:
         with st.sidebar:
             ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO","About-Us"],icons=["box-arrow-in-right", "pencil-square","info-circle"])
@@ -39,6 +41,7 @@ def main():
         st.session_state["timestamp"] = datetime.now()
         f=os.fork()
         if f==0:
+            print("Checking for transactions")
             ngo_db=NGO_Database(db)
             
             get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])

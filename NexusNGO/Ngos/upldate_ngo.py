@@ -3,6 +3,7 @@ from Firebase.db_interaction import NGO_Database  # Interact with Firestore data
 
 def update_profile(ngo_db, ngo_data):
     # Centered header with animation
+    print("entered update profile")
     st.markdown("<h2 class='fade-in'>Update Profile</h2>", unsafe_allow_html=True)
 
     # Input fields with current data and animation

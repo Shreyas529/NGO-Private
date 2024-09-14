@@ -106,8 +106,8 @@ def get_ngo_data_by_email(ngo_db, email):
 
 def display_ngo_dashboard(ngo_db, ngo_data):
     st.subheader(f"Welcome, {ngo_data['Name']}!")
-    
-    st.write(f"**Description**: {ngo_data.get('Description', 'No Description')}")
+    desc=ngo_data.get('Description', 'No Description').replace("<br>","\n")
+    st.write(f"{desc}")
     st.write(f"**Needs**: {', '.join(ngo_data.get('needs', []))}")
     
     # Consistent button styles with hover animation

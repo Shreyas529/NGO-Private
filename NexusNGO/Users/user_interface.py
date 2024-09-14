@@ -267,8 +267,7 @@ def search_ngos(ngo_db):
                 ngo_email = ngo.get('email', 'No email available')
 
                 # NGO description in Markdown format (assume this is pre-formatted in Markdown)
-                ngo_description = ngo.get('Description', 'No description available')
-                print(ngo_description)
+                ngo_description = ngo.get('Description', 'No description available').replace('<br>', '\n')
 
                 with st.expander(f"{ngo_name}"):
                     st.write(f"*Phone:* {ngo_phone}")
@@ -291,8 +290,9 @@ def display_top_ngos(ngo_db):
     ngos = ngo_db.get_ngos()
     for ngo in ngos:
         st.markdown(f"<h3 class='fade-in-slow'>NGO: {ngo['Name']}</h3>", unsafe_allow_html=True)
-        st.write(f"**Description**: {ngo.get('Description', 'No description available')}")
-        st.write(f"**Phone**: {ngo.get('Phone', 'No phone available')}")
+        desc=(ngo.get('Description', 'No description available')).replace('<br>','\n')
+        st.markdown(f"{desc}",unsafe_allow_html=True)
+        st.markdown(f"**Phone**: {ngo.get('Phone', 'No phone available')}",unsafe_allow_html=True)
 
         if 'Logo' in ngo:
             image = ImageDatabase().get_image(ngo['Logo'])
