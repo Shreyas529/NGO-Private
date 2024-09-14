@@ -55,6 +55,6 @@ item2, item5
 ---
 
 Based on this input, return a list of NGO names that match the detected objects. Do not return any other information, stick to the format provided in the example.
-
+Do not change the NGO names in the input. Return the output as it is
 ---
 """

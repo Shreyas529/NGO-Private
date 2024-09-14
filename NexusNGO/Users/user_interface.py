@@ -150,14 +150,48 @@ def donate_items(ngo_db):
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
                 resp = response_object._categorise_objects_to_NGO(ngo_item_mapping)
-                resp = [resp[i].replace("'", "") for i in range(len(resp)) if resp[i] != ""]
+                resp = [resp[i].replace("'", "").lower().strip() for i in range(len(resp)) if resp[i] != ""]
                 data = {"NGO Name": resp}
-                data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'] in data["NGO Name"]]
+                data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'].lower().strip() in resp]
+                print(data)
                 df = pd.DataFrame(data)
+                styled_df = df.style.set_properties({
+                    'background-color': '#f5f5f5',
+                    'color': '#333',
+                    'border-color': '#FF6F61',
+                    'border-width': '2px',
+                    'border-style': 'solid',
+                    'text-align': 'left'
+                }).set_table_styles([
+                    {
+                        'selector': 'thead th',
+                        'props': [('background-color', '#FF6F61'), ('color', 'white')]
+                    }
+                ])
+
 
                 # Display matching NGOs
                 st.markdown("<h3 class='fade-in' style='color: #FF4B4B;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
-                st.dataframe(df)
+                # st.dataframe(df)
+                col1, col2, col3 = st.columns([3, 2, 1])
+                col1.markdown("*NGO Name*")
+                col2.markdown("*Contact*")
+                col3.markdown("")
+
+                # Display each row in the table with a "View More" button
+                for index, row in df.iterrows():
+                        ngo_name = row['NGO Name']
+                        contact = row['Contact']
+                        st.markdown(f"### {index + 1}: {ngo_name}")
+                        st.write(f"📞 Contact: {contact}")
+                        # Use an expander for needs and description
+                        with st.expander(f"More details about {ngo_name}"):
+                            for ngo_details in ngo_data:
+                                if ngo_details["Name"]==ngo_name:
+                                    break
+                            st.write(f"*Needs*: {', '.join(ngo_details.get('needs', []))}")
+                            desc=ngo_details.get('Description', 'No description available').replace("<br>","\n")
+                            st.write(f"{desc}")
 
     elif option == "📝 Describe the Item":
         st.subheader("Describe the Item You Wish to Donate")
@@ -173,12 +207,25 @@ def donate_items(ngo_db):
                 ngo_data = ngo_db.get_ngos()
                 ngo_item_mapping = {ngo_data[i]['Name']: ngo_data[i]['needs'] for i in range(len(ngo_data))}
                 resp = response_object._categorise_objects_to_NGO(ngo_item_mapping)
-                resp = [resp[i].replace("'", "") for i in range(len(resp))]
+                resp = [resp[i].replace("'", "").lower().strip() for i in range(len(resp))]
                 data = {"NGO Name": resp}
-                data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'] in data["NGO Name"]]
+                data["Contact"] = [ngo_data[i]['Phone'] for i in range(len(ngo_data)) if ngo_data[i]['Name'].lower() in resp]
                 df = pd.DataFrame(data)
                 st.markdown("<h3 class='fade-in' style='color: #FF4B4B;'>🎯 Matching NGOs Found:</h3>", unsafe_allow_html=True)
                 st.dataframe(df)
+                for index, row in df.iterrows():
+                        ngo_name = row['NGO Name']
+                        contact = row['Contact']
+                        st.markdown(f"### {index + 1}: {ngo_name}")
+                        st.write(f"📞 Contact: {contact}")
+                        # Use an expander for needs and description
+                        with st.expander(f"More details about {ngo_name}"):
+                            for ngo_details in ngo_data:
+                                if ngo_details["Name"]==ngo_name:
+                                    break
+                            st.write(f"*Needs*: {', '.join(ngo_details.get('needs', []))}")
+                            desc=ngo_details.get('Description', 'No description available').replace("<br>","\n")
+                            st.write(f"{desc}")
             else:
                 st.warning("⚠️ Please enter a description of the item.")
 
