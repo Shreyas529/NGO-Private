@@ -5,30 +5,44 @@ from Users.user_interface import user_ui
 from Ngos.ngo_interface import ngo_interface
 from Ngos.register_ngo import ngo_registration
 from Info.about_us import about_us
+from datetime import datetime
+import os
+from blockchain.blockchain import get_transactions_last_3_minutes
+from Firebase.db_interaction import NGO_Database
 
 # Custom component for the sidebar
 def sidebar(db):
     # st.sidebar.title("NGO Navigation")
     # ngo_action = st.sidebar.radio("Select Action", ["Login", "Register NGO"])
-    
-    with st.sidebar:
-        ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO","About-Us"],icons=["box-arrow-in-right", "pencil-square","info-circle"])
+    if st.session_state.get("logged_in"):
+            pass
+    else:
+        with st.sidebar:
+            ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO","About-Us"],icons=["box-arrow-in-right", "pencil-square","info-circle"])
         
-    if ngo_action == "Login":
-        ngo_interface(db)
+        if ngo_action == "Login":
+            ngo_interface(db)
+            
+        elif ngo_action == "Register NGO":
+            ngo_registration(db)
         
-    elif ngo_action == "Register NGO":
-        ngo_registration(db)
-        
-    elif ngo_action == "About-Us":
-        # st.warning("You are about to lose all unsaved data. Are you sure you want to proceed?")
-        # if st.button("Yes, Proceed"):
-        about_us()             
+        elif ngo_action == "About-Us":
+            about_us()             
 
 # Function to display the main page and navigation options
 def main():
     # Initialize Firebase once
     db = initialize_firebase()
+    if st.session_state.get("timestamp") is None:
+        st.session_state["timestamp"] = datetime.now()
+    if (datetime.now() - st.session_state["timestamp"]).seconds > 160:
+        st.session_state["timestamp"] = datetime.now()
+        f=os.fork()
+        if f==0:
+            ngo_db=NGO_Database(db)
+            
+            get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
+            exit(0)
 
     # Custom CSS to modify the design according to your requirements
     st.markdown("""
@@ -141,7 +155,7 @@ def main():
         # Image in the first column
         with col1:
             st.markdown('<div class="image-container">', unsafe_allow_html=True)
-            st.image("/home/shreyasarun/Documents/Hackathons/Collosus/NGO-Private/NexusNGO/temp.png")
+            st.image("./temp.png")
             st.markdown('</div>', unsafe_allow_html=True)
         
         # Text and buttons in the second column

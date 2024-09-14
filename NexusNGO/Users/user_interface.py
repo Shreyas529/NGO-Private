@@ -99,7 +99,7 @@ def user_ui(db):
     # st.sidebar.title("Navigation")
     with st.sidebar:
         # option = st.sidebar.radio("", ["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs"], key="nav_option")
-        option = option_menu("Donor Navigation",["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs","Blockchain Transactions","About Us"] ,icons=["gift", "cash" , "search" , "bar-chart","currency-exchange","info-circle"],key="nav_option")
+        option = option_menu("Donor Navigation",["Donate Items", "Donate Funds", "Search NGOs", "Top NGOs","About Us"] ,icons=["gift", "cash" , "search" , "bar-chart","info-circle"],key="nav_option")
 
     if option == "Donate Items":
         donate_items(ngo_db)
@@ -109,8 +109,6 @@ def user_ui(db):
         search_ngos(ngo_db)
     elif option == "Top NGOs":
         display_top_ngos(ngo_db)
-    elif option == "Blockchain Transactions":
-        transaction_page(ngo_db)
     elif option == "About Us":
         about_us()
 
@@ -215,7 +213,6 @@ def donate_funds(ngo_db):
 
     # View transactions button
     if st.button('View Detailed Transactions'):
-        get_transactions_last_3_minutes(PUBLIC_KEYS)
 
         # Read transactions from CSV
         if os.path.exists('transactions.csv'):
