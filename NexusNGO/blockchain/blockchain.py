@@ -21,13 +21,14 @@ def get_transactions_last_3_minutes(public_keys):
     block_num = latest_block    
 
     # Define a time limit (3 minutes ago)
-    time_limit = current_time - timedelta(minutes=3)
+    time_limit = current_time - timedelta(minutes=10)
 
     # Loop over each public key
     for PUBLIC_KEY in public_keys:
         print(PUBLIC_KEY)
         address = web3.to_checksum_address(PUBLIC_KEY)
         transactions = []
+        block_num = latest_block 
 
         while True:
             try:
@@ -65,6 +66,7 @@ def get_transactions_last_3_minutes(public_keys):
 
     # Save transactions to CSV if any are found
     if all_transactions:
+        print("Transactions found!")
         df = pd.DataFrame(all_transactions)
         if os.path.exists("transactions.csv"):
             df_existing = pd.read_csv("transactions.csv")

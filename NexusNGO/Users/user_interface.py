@@ -116,7 +116,7 @@ def user_ui(db):
 # Update "Donate Items" function with consistent animations and styles
 def donate_items(ngo_db):
     # Page header with fade-in effect
-    st.markdown("<h1 class='fade-in' style='text-align: center; color: #60a5fa;'>👐 Donate Items</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='fade-in' style='text-align: center; color: #FFFFFF;'>👐 Donate Items</h1>", unsafe_allow_html=True)
     st.write("You can either upload an image of the item or describe it to find matching NGOs.")
 
     # Choose method of donation (image or description)
@@ -231,7 +231,7 @@ def donate_items(ngo_db):
 
 
 def donate_funds(ngo_db):
-    st.markdown("<h1 class='header section-header fade-in'>💰 Donate Funds</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='header section-header fade-in' style='color:#FFFFFF;'>💰 Donate Funds</h1>", unsafe_allow_html=True)
     st.write("Choose an NGO and securely donate funds.")
 
     # Donation Section
@@ -332,7 +332,7 @@ def search_ngos(ngo_db):
 
 
 def display_top_ngos(ngo_db):
-    st.markdown("<h1 class='header section-header fade-in'>🌟 Top NGOs</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='header section-header fade-in' style='color:white;'>🌟 Top NGOs</h1>", unsafe_allow_html=True)
     
     ngos = ngo_db.get_ngos()
     for ngo in ngos:

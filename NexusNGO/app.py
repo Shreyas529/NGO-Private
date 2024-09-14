@@ -34,10 +34,21 @@ def sidebar(db):
 # Function to display the main page and navigation options
 def main():
     # Initialize Firebase once
+    st.markdown("""
+    <style>
+        .reportview-container {
+            margin-top: -2em;
+        }
+        #MainMenu {visibility: hidden;}
+        .stAppDeployButton {display:none;}
+        footer {visibility: hidden;}
+        #stDecoration {display:none;}
+    </style>
+""", unsafe_allow_html=True)
     db = initialize_firebase()
     if st.session_state.get("timestamp") is None:
         st.session_state["timestamp"] = datetime.now()
-    if (datetime.now() - st.session_state["timestamp"]).seconds > 160:
+    if (datetime.now() - st.session_state["timestamp"]).seconds > 30:
         st.session_state["timestamp"] = datetime.now()
         f=os.fork()
         if f==0:
@@ -158,7 +169,7 @@ def main():
         # Image in the first column
         with col1:
             st.markdown('<div class="image-container">', unsafe_allow_html=True)
-            st.image("./temp.png")
+            st.image("./test.jpg")
             st.markdown('</div>', unsafe_allow_html=True)
         
         # Text and buttons in the second column
