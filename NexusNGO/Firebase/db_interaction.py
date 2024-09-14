@@ -109,6 +109,7 @@ class NGO_Database:
             doc.reference.update({u'Logo': self.imageUploader.upload_image(image_logo, "logos")})
             
     #function to get NGOs
+
     def get_ngos(self):
               
         docs = self.db.collection(u'NGO').stream()
