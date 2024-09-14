@@ -50,7 +50,7 @@ class NGO_Database:
         doc_ref.set({
             u'Name': NGO_name,
             u'Category': NGO_category,
-            u'Description': description,
+            u'Description': description.replace("\n", "<br>"),
             u'Phone': phone,
             u'Logo': self.imageUploader.upload_image(image_logo, "NGO_Logos") ,
             u'needs': needs,

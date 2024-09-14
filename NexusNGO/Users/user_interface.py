@@ -271,14 +271,14 @@ def search_ngos(ngo_db):
 
                 # NGO description in Markdown format (assume this is pre-formatted in Markdown)
                 ngo_description = ngo.get('Description', 'No description available')
-                print(ngo_description.replace("\\n", "\n"))
+                print(ngo_description)
 
                 with st.expander(f"{ngo_name}"):
                     st.write(f"*Phone:* {ngo_phone}")
                     st.write(f"*Email:* {ngo_email}")
 
                     # Render description as markdown
-                    st.markdown(ngo_description)
+                    st.markdown(ngo_description, unsafe_allow_html=True)
 
                     # Display needs (if available) at the end
                     ngo_needs = ngo.get('needs', [])
