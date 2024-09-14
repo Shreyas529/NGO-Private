@@ -1,6 +1,6 @@
 import streamlit as st
 from Firebase.cred import initialize_firebase
-from Firebase.authenticate import create_user  # Use Firebase function for creating new users
+from Firebase.authenticate import create_user,authenticate_ngo  # Use Firebase function for creating new users
 from Firebase.db_interaction import NGO_Database  # Use NGO_Database to interact with Firestore
 import time
 
@@ -93,6 +93,7 @@ def ngo_registration(db):
     needs = st.text_area("List of Needs (e.g., food, clothes, books)", help="Separate items by commas", key="needs")
     image_logo = st.file_uploader("Upload NGO Logo", type=["jpg", "jpeg", "png"], key="image_logo")
     phone = st.text_input("Contact Phone Number", max_chars=10, key="phone")
+    metamask_address = st.text_input("Metamask Address", key="metamask_address")
 
     # Custom button styling for Register
     if st.button("Register"):
@@ -101,7 +102,8 @@ def ngo_registration(db):
             ngo_db = NGO_Database(db)
 
             # Create a new Firebase user
-            id_token = create_user(email, password)
+            create_user(email, password)
+            id_token=authenticate_ngo(email,password)
             time.sleep(1)
             if id_token:
                 # Prepare data
@@ -119,7 +121,7 @@ def ngo_registration(db):
                     image_bytes = image_logo.read()
                 else:
                     image_bytes = None
-                ngo_db.add_NGO(id_token, ngo_name, "General", image_bytes, description, phone, needs_list, email)
+                ngo_db.add_NGO(id_token, ngo_name, "General", image_bytes, description, phone, needs_list, email,metamask_address)
 
                 st.success("NGO Registered Successfully!")
             else:
