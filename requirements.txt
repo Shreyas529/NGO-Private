@@ -4,3 +4,4 @@ python-dotenv
 py-evm
 eth-tester
 web3
+plotly
