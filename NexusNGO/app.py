@@ -154,7 +154,7 @@ def main():
             # Donor and NGO buttons for navigation
             donor_button = st.button("I'm a Donor")
             ngo_button = st.button("I'm an NGO")
-            about_us_button = st.button("About Us")
+            # about_us_button = st.button("About Us")
             st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div></div>', unsafe_allow_html=True)
@@ -167,8 +167,8 @@ def main():
         elif ngo_button:
             st.session_state['role'] = 'NGO'
             st.rerun()  # Immediately rerun to hide the role selection
-        elif about_us_button:
-            about_us()
+        # elif about_us_button:
+        #     about_us()
             # st.rerun()
 
     # If role is selected, redirect to respective interface

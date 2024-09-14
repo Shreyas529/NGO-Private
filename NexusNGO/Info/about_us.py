@@ -9,23 +9,7 @@ def about_us():
         color: white;
     }
     
-    .stButton > button {
-            background-color: #FF4B4B;
-            color: white;
-            border-radius: 9999px;
-            padding: 0.5rem 1rem;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin: 0.5rem 0;
-            width: 100%;
-        }
-        .stButton > button:hover {
-            background-color: #FFFFFF;
-            color: #FF4B4B;
-            transform: scale(1.05);
-        }
+    
     
     p{
         font-size: 20px;
@@ -34,6 +18,25 @@ def about_us():
     li{
         font-size: 20px;
     }    
+    
+    .stButton > button {
+            background-color: #FF4B4B; /* Consistent color with app.py */
+            color: white;
+            border-radius: 30px;
+            padding: 10px 24px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            width: 200px;
+        }
+        .stButton > button:hover {
+            background-color: #FFFFFF; /* Hover effect */
+            color: #FF4B4B;
+            transform: scale(1.05);
+            font-weight: bold;
+        }
     
     hr.solid {
         border-top: 3px solid #bbb;
