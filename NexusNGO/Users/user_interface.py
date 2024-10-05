@@ -17,7 +17,7 @@ from Info.about_us import about_us
 import os  
 import pandas as pd
 from dotenv import load_dotenv  
-from web3 import Web3, exceptions
+# from web3 import Web3, exceptions
 from datetime import datetime, timedelta
 import plotly.express as px
 
