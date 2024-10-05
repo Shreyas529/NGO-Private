@@ -6,7 +6,16 @@ from datetime import datetime, timedelta
 
 load_dotenv()
 
+import asyncio
+
+
+
+
 def get_transactions_last_3_minutes(public_keys):
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
     infura_url = f'https://sepolia.infura.io/v3/{os.getenv("INFURA_API_KEY")}'
     web3 = Web3(Web3.HTTPProvider(infura_url))
 
@@ -21,7 +30,7 @@ def get_transactions_last_3_minutes(public_keys):
     block_num = latest_block    
 
     # Define a time limit (3 minutes ago)
-    time_limit = current_time - timedelta(minutes=10)
+    time_limit = current_time - timedelta(minutes=3)
 
     # Loop over each public key
     for PUBLIC_KEY in public_keys:
