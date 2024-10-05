@@ -7,7 +7,7 @@ from Ngos.register_ngo import ngo_registration
 from Info.about_us import about_us
 from datetime import datetime
 import os
-from blockchain.blockchain import get_transactions_last_3_minutes
+# from blockchain.blockchain import get_transactions_last_3_minutes
 from Firebase.db_interaction import NGO_Database
 from Ngos.upldate_ngo import update_profile
 import threading
@@ -30,7 +30,7 @@ def sidebar(db):
 def check_transactions(db):
     print("Checking for transactions")
     ngo_db = NGO_Database(db)
-    get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
+    # get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
 
 def main():
     st.markdown("""
