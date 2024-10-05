@@ -11,7 +11,7 @@ from Firebase.cred import initialize_firebase
 from Firebase.db_interaction import NGO_Database
 from Firebase.db_interaction import ImageDatabase
 from Ngos.ngo_interface import display_ngo_dashboard
-from blockchain.blockchain import get_transactions_last_3_minutes
+# from blockchain.blockchain import get_transactions_last_3_minutes
 from Info.about_us import about_us
 
 import os  
@@ -375,7 +375,7 @@ def transaction_page(ngo_db):
     PUBLIC_KEYS = list(address_to_name.keys())
     # Update the transactions every 3 minutes
     if PUBLIC_KEYS:
-        get_transactions_last_3_minutes(PUBLIC_KEYS)
+        # get_transactions_last_3_minutes(PUBLIC_KEYS)
 
         # Read transactions from CSV
         if os.path.exists('transactions.csv'):
