@@ -28,9 +28,10 @@ def sidebar(db):
             about_us()
 
 def check_transactions(db):
+    from blockchain.blockchain import get_transactions_last_3_minutes
     print("Checking for transactions")
     ngo_db = NGO_Database(db)
-    # get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
+    get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
 
 def main():
     st.markdown("""
