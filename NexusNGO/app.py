@@ -7,33 +7,33 @@ from Ngos.register_ngo import ngo_registration
 from Info.about_us import about_us
 from datetime import datetime
 import os
-# from blockchain.blockchain import get_transactions_last_3_minutes
 from Firebase.db_interaction import NGO_Database
 from Ngos.upldate_ngo import update_profile
-import threading
+import asyncio
 
 # Custom component for the sidebar
 def sidebar(db):
+    # st.sidebar.title("NGO Navigation")
+    # ngo_action = st.sidebar.radio("Select Action", ["Login", "Register NGO"])
     if st.session_state.get("logged_in"):
         ngo_interface(db)
+        
     else:
         with st.sidebar:
-            ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO", "About-Us"], icons=["box-arrow-in-right", "pencil-square", "info-circle"])
+            ngo_action = option_menu("NGO Navigation", ["Login", "Register NGO","About-Us"],icons=["box-arrow-in-right", "pencil-square","info-circle"])
         
         if ngo_action == "Login":
             ngo_interface(db)
+            
         elif ngo_action == "Register NGO":
             ngo_registration(db)
+        
         elif ngo_action == "About-Us":
-            about_us()
+            about_us()             
 
-def check_transactions(db):
-    from blockchain.blockchain import get_transactions_last_3_minutes
-    print("Checking for transactions")
-    ngo_db = NGO_Database(db)
-    get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
-
+# Function to display the main page and navigation options
 def main():
+    # Initialize Firebase once
     st.markdown("""
     <style>
         .reportview-container {
@@ -44,21 +44,26 @@ def main():
         footer {visibility: hidden;}
         #stDecoration {display:none;}
     </style>
-    """, unsafe_allow_html=True)
-    
+""", unsafe_allow_html=True)
     db = initialize_firebase()
-    
     if st.session_state.get("timestamp") is None:
         st.session_state["timestamp"] = datetime.now()
-    
     if (datetime.now() - st.session_state["timestamp"]).seconds > 30:
         st.session_state["timestamp"] = datetime.now()
-        # Use threading instead of fork
-        thread = threading.Thread(target=check_transactions, args=(db,))
-        thread.start()
+        f=os.fork()
+        if f==0:
+            new_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            print("Checking for transactions")
+            ngo_db=NGO_Database(db)
+            from blockchain.blockchain import get_transactions_last_3_minutes
 
+            get_transactions_last_3_minutes([i["metamask_address"] for i in ngo_db.get_ngos()])
+            exit(0)
+
+    # Custom CSS to modify the design according to your requirements
     st.markdown("""
-    <style>
+        <style>
         /* Global Settings */
         body {
             font-family: 'Arial', sans-serif;
@@ -75,23 +80,24 @@ def main():
             background: linear-gradient(to bottom, #1a202c, #000000);
         }
         
-        .css-1d391kg {
-            background: linear-gradient(to bottom, #1a202c, #000000);
+        .css-1d391kg {  /* Targets the sidebar */
+        background: linear-gradient(to bottom, #1a202c, #000000);
         }
-        .css-1d391kg > div {
+        .css-1d391kg > div { /* This centers the content within the sidebar */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
-        .css-1d391kg .css-2vl3m9 {
-            background-color: transparent;
+        .css-1d391kg .css-2vl3m9 {  /* Targets the option menu */
+            background-color: transparent;  /* Keep transparent to show gradient */
         }
-        .css-2vl3m9 .nav-item {
+        .css-2vl3m9 .nav-item {  /* Aligns the individual nav items to center */
             text-align: center;
             width: 100%;
         }
+
         /* Card styling */
         .card {
             display: flex;
@@ -147,40 +153,56 @@ def main():
             color: #FF4B4B;
             transform: scale(1.05);
         }
-    </style>
-    """, unsafe_allow_html=True)
+        </style>
+        """, unsafe_allow_html=True)
 
+    # Check if the user role is stored in session_state
     if 'role' not in st.session_state:
         st.session_state['role'] = None
 
+    # If role is not set, display the landing page with role selection
     if st.session_state['role'] is None:
+        
+        
+        # st.markdown('<div class="card"><div class="card-content">', unsafe_allow_html=True)
+        
+        # Create two columns for the layout
         col1, col2 = st.columns(2, gap='medium')
         
+        # Image in the first column
         with col1:
             st.markdown('<div class="image-container">', unsafe_allow_html=True)
             st.image("./test.jpg")
             st.markdown('</div>', unsafe_allow_html=True)
         
+        # Text and buttons in the second column
         with col2:
             st.markdown('<div class="text-container">', unsafe_allow_html=True)
             st.markdown("<h1>Welcome to NexusNGO</h1>", unsafe_allow_html=True)
             st.markdown("<h3>Connecting donors with NGOs to make a lasting impact.</h3>", unsafe_allow_html=True)
             st.markdown("<h3>Please select your role:</h3>", unsafe_allow_html=True)
             
+            # Donor and NGO buttons for navigation
             donor_button = st.button("I'm a Donor")
             ngo_button = st.button("I'm an NGO")
+            # about_us_button = st.button("About Us")
             st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div></div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
+        # Store the selected role in session_state
         if donor_button:
             st.session_state['role'] = 'Donor'
-            st.rerun()
+            st.rerun()  # Immediately rerun to hide the role selection
         elif ngo_button:
             st.session_state['role'] = 'NGO'
-            st.rerun()
+            st.rerun()  # Immediately rerun to hide the role selection
+        # elif about_us_button:
+        #     about_us()
+            # st.rerun()
 
+    # If role is selected, redirect to respective interface
     if st.session_state['role'] == 'Donor':
         st.markdown('<div class="content-container">', unsafe_allow_html=True)
         user_ui(db)
@@ -190,14 +212,18 @@ def main():
         sidebar(db)
         st.markdown('</div>', unsafe_allow_html=True)
 
+    # Add a "Select Role" option in the sidebar for easy role switching
     if st.session_state['role'] is not None:
         if st.sidebar.button("Select Role"):
             reset_role()
-            st.rerun()
+            st.rerun()  # Refresh the app to return to the role selection page
 
+# Function to reset the role and go back to the landing page
 def reset_role():
+    # Delete all the items in Session state
     for key in st.session_state.keys():
         del st.session_state[key]
 
+# Run the main function
 if __name__ == "__main__":
     main()
