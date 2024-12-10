@@ -110,3 +110,8 @@ The Firebase database is first initialised, and a testing class is created, inhe
 
 - A public key is used to retrieve transaction data from the last 3 minutes. The results of the fetch are verified
 - A 'mock' version of the pandas ```to_csv``` method is created, and this checks if the ```to_csv``` method was called exactly once in the ```get_transactions_last_3_minutes()``` method, with the right arguments.
+
+Testing files:
+
+/NexusNGO/Testing/blockhain_llm_testing.py
+/NexusNGO/Testing/database_test.py
