@@ -6,9 +6,6 @@ from datetime import datetime, timedelta
 
 load_dotenv()
 
-import asyncio
-
-
 
 
 def get_transactions_last_3_minutes(public_keys):
@@ -31,7 +28,6 @@ def get_transactions_last_3_minutes(public_keys):
 
     # Loop over each public key
     for PUBLIC_KEY in public_keys:
-        print(PUBLIC_KEY)
         address = web3.to_checksum_address(PUBLIC_KEY)
         transactions = []
         block_num = latest_block 
@@ -77,10 +73,21 @@ def get_transactions_last_3_minutes(public_keys):
         if os.path.exists("transactions.csv"):
             df_existing = pd.read_csv("transactions.csv")
             df = pd.concat([df_existing, df], ignore_index=True)
+           
             df.drop_duplicates(subset=['hash'], inplace=True)
         df.to_csv('transactions.csv', index=False)
         return df
+    
     else:
-        return pd.DataFrame()
+        df=pd.DataFrame(columns = [
+        'blockNumber', 'from', 'to', 'value', 'hash', 'gas', 
+        'gasPrice', 'input', 'timestamp'
+    ])
+        if os.path.exists("transactions.csv"):
+            df_existing = pd.read_csv("transactions.csv")
+            df=df_existing
+            df.drop_duplicates(subset=['hash'], inplace=True)
+        df.to_csv('transactions.csv', index=False)
+        return df
 
 

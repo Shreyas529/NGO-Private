@@ -37,11 +37,10 @@ class Response:
                 ],
             }
         ],
-        model="llava-v1.5-7b-4096-preview",
+        model="llama-3.2-11b-vision-preview",
         temperature=0
     )
         response=chat_completion.choices[0].message.content
-        print(response)
         return response
     
     def _handle_text(self):

@@ -46,6 +46,8 @@ class NGO_Database:
             raise Exception("User not authenticated")
 
         # Proceed with adding NGO
+        if image_logo is None:
+            image_logo=b""
         doc_ref = self.db.collection(u'NGO').document()
         doc_ref.set({
             u'Name': NGO_name,
@@ -117,3 +119,16 @@ class NGO_Database:
         for doc in docs:
             ngos.append(doc.to_dict())
         return ngos
+    
+    def get_ngo(self, NGO_name):
+            
+            docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+            for doc in docs:
+                return doc.to_dict()
+            return None
+    
+    def delete_ngo(self, id_token, NGO_name):
+        
+        docs = self.db.collection(u'NGO').where(u'Name', u'==', NGO_name).stream()
+        for doc in docs:
+            doc.reference.delete()
